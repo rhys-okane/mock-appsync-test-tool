@@ -2,10 +2,11 @@ import {useEffect} from "react";;
 import {socket} from "../../Socket";
 import {useSocketInfoState} from "../UseSocketInfoState";
 
-export function useListenForSocketConnectionEvents() {
+export function useSocketConnectionEventListener() {
   const [, setSocketInfo] = useSocketInfoState();
-
+  
   useEffect(() => {
+    console.log("Setting up Socket.IO connection event listeners");
     const onConnect = () => {
       setSocketInfo({
         connected: true

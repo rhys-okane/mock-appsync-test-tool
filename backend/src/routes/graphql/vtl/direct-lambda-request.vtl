@@ -1,0 +1,19 @@
+{
+  "version" : "2017-02-28",
+  "operation": "Invoke",
+  "payload": {
+    "arguments": $util.toJson($ctx.arguments),
+    "identity": $util.toJson($ctx.identity),
+    "source": $util.toJson($ctx.source),
+    "request": $util.toJson($ctx.request),
+    "prev": $util.toJson($ctx.prev),
+    "info": {
+        "selectionSetList": $util.toJson($ctx.info.selectionSetList),
+        "selectionSetGraphQL": $util.toJson($ctx.info.selectionSetGraphQL),
+        "parentTypeName": $util.toJson($ctx.info.parentTypeName),
+        "fieldName": $util.toJson($ctx.info.fieldName),
+        "variables": $util.toJson($ctx.info.variables)
+    },
+    "stash": $util.toJson($ctx.stash)
+  }
+}

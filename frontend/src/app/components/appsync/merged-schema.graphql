@@ -1,0 +1,1800 @@
+"""This directive allows results to be deferred during execution"""
+directive @defer on FIELD
+
+"""
+Tells the service which subscriptions will be published to when this mutation is
+called. This directive is deprecated use @aws_susbscribe directive instead.
+"""
+directive @aws_publish(
+  """
+  List of subscriptions which will be published to when this mutation is called.
+  """
+  subscriptions: [String]
+) on FIELD_DEFINITION
+
+"""
+Tells the service this field/object has access authorized by a Cognito User Pools token.
+"""
+directive @aws_cognito_user_pools(
+  """List of cognito user pool groups which have access on this field"""
+  cognito_groups: [String]
+) on OBJECT | FIELD_DEFINITION
+
+"""
+Tells the service this field/object has access authorized by an OIDC token.
+"""
+directive @aws_oidc on OBJECT | FIELD_DEFINITION
+
+"""
+Tells the service this field/object has access authorized by sigv4 signing.
+"""
+directive @aws_iam on OBJECT | FIELD_DEFINITION
+
+"""
+Tells the service this field/object has access authorized by an API key.
+"""
+directive @aws_api_key on OBJECT | FIELD_DEFINITION
+
+"""Tells the service which mutation triggers this subscription."""
+directive @aws_subscribe(
+  """
+  List of mutations which will trigger this subscription when they are called.
+  """
+  mutations: [String]
+) on FIELD_DEFINITION
+
+"""
+Tells the service this field/object has access authorized by a Lambda Authorizer.
+"""
+directive @aws_lambda on OBJECT | FIELD_DEFINITION
+
+"""Directs the schema to enforce authorization on a field"""
+directive @aws_auth(
+  """List of cognito user pool groups which have access on this field"""
+  cognito_groups: [String]
+) on FIELD_DEFINITION
+
+type Address {
+  street: String!
+  city: String!
+  state: String!
+  zip: String!
+  country: String!
+}
+
+input AddressInput {
+  street: String!
+  city: String!
+  state: String!
+  zip: String!
+  country: String!
+}
+
+input AddUserToOrganizationInput {
+  userId: ID!
+  providerOrganizationLinks: ProviderOrganizationLinks!
+}
+
+type AdminNotification {
+  id: ID!
+  scheduledTime: String
+  recipients: Recipients!
+  recipientId: String
+  title: String!
+  text: String!
+  adminNotificationStatus: AdminNotificationStatus!
+  dateSent: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+enum AdminNotificationStatus {
+  PENDING
+  SENT
+}
+
+type Amounts {
+  billed: Float!
+}
+
+type Attestant {
+  attestantId: ID!
+  firstName: String!
+  lastName: String!
+  role: Role!
+}
+
+type AttestationChange {
+  fieldName: AttestationChangeFieldName!
+  oldValue: String!
+  newValue: String!
+}
+
+enum AttestationChangeFieldName {
+  FIRST_NAME
+  LAST_NAME
+  PHONE_NUMBER
+  EMAIL
+  ADDRESS
+  SPECIALITY
+  WEBSITE
+}
+
+type AttestationCycle {
+  attestationCycleId: ID!
+  startDate: String!
+  endDate: String!
+  locked: Boolean!
+  firstAttestationReminder: Int!
+  secondAttestationReminder: Int!
+  thirdAttestationReminder: Int!
+}
+
+enum AttestationStatus {
+  PENDING
+  INFO_CHANGED
+  CONFIRMED
+  EXPIRED
+}
+
+type AutoCompleteResponse {
+  practitioners: [Practitioner!]
+  specialties: [String!]
+  facilities: [ProviderSearchFacility!]
+}
+
+input AutoCompleteSearchInput {
+  searchQuery: String!
+  location: LocationInput!
+}
+
+type AvailablePlan {
+  id: ID!
+  name: String!
+  types: [PlanType!]!
+  groupNumber: String!
+  productNumber: Int!
+  benefitProvider: String!
+  medicalBenefitName: String!
+  medicalBenefitId: String!
+  employerName: String!
+  medicalCoPay: Float!
+  rxCoPay: Float!
+}
+
+type AvailablePlansQuery {
+  getAvailablePlans(nextToken: String, pageSize: Int): GetAvailablePlansResponse
+}
+
+interface BaseLearningResource {
+  id: ID!
+  type: LearningResourceType!
+  category: LearningResourceCategory!
+  isMandatory: Boolean!
+  linkUrl: String
+  fileName: String
+  name: String!
+  description: String!
+  createdAt: String!
+  updatedAt: String!
+  resourceFile: LearningResourceFile
+}
+
+type Benefit {
+  planId: ID!
+  id: ID!
+  benefitName: String!
+  medicalCode: String!
+  ppoCoverageLevelVip: String
+  ppoCoverageLevelInNetwork: String
+  ppoCoverageLevelOutOfNetwork: String
+  notes: String
+  pinned: Boolean!
+}
+
+type BenefitsQuery {
+  getBenefits(planId: String, nextToken: String, pageSize: Int): GetBenefitsResponse
+}
+
+type Card {
+  frontSideUrl: String!
+  backSideUrl: String!
+  prescriptionType: PrescriptionType!
+  prescriptionName: String!
+  prescriptionSupply: String!
+  status: String!
+  cost: Float!
+}
+
+type CarePackage {
+  planId: ID!
+  id: ID!
+  episodeId: String!
+  episodeName: String!
+  episodeType: String!
+  benefitCategory: String!
+  clinicalCategory: String
+  triggeringConditions: String
+  triggerCriteria: String!
+  triggeringProcedureCodes: [String!]
+  combinedTriggeringProcedureCodes: CombinedTriggeringProcedureCodes
+  triggeringProcedures: [String!]
+  careIncluded: String!
+  episodeTimeframe: String!
+  qualityMetrics: String!
+  episodeExclusions: EpisodeExclusions!
+}
+
+enum CarePackageAttestationStatus {
+  CONFIRMED
+  PENDING
+  DECLINED
+}
+
+enum CarePackageCategory {
+  BHMH
+  CARDIOVASCULAR
+  DERMATOLOGY
+  ENDOCRINEMETABOLIC
+  ENT
+  EYE
+  GENERAL
+  GENERALSURGERY
+  GI
+  HEME
+  MSK
+  NEPHROLOGY
+  NEURO
+  OBGYN
+  ONCOLOGY
+  PLASTICSURGERY
+  PULMONOLOGY
+  RHEUMATOLOGY
+  UROLOGY
+  VASCULARSURGERY
+}
+
+type CarePackageOutstandingBalance {
+  paid: Float!
+  total: Float!
+}
+
+type CarePackagesQuery {
+  getCarePackages(planId: String, nextToken: String, pageSize: Int): GetCarePackagesResponse
+}
+
+enum CarePackageType {
+  ACUTE
+  CHRONIC
+  PROCEDURAL
+  PCP
+}
+
+type CarePackageUsage {
+  id: ID!
+  planId: String!
+  memberId: String!
+  primaryMemberId: String!
+  carePackageId: String!
+  episodeId: String!
+  episodeNameSimplified: String!
+  episodeNameLong: String!
+  carePackageType: CarePackageType!
+  carePackageCategory: CarePackageCategory!
+  createdAt: String!
+  updatedAt: String!
+  totalToDatePrice: Float!
+  totalGuaranteePrice: Float!
+  outstandingOwed: Float!
+  notes: String!
+  carePackageUsageServiceItems: [CarePackageUsageServiceItem!]!
+}
+
+type CarePackageUsageServiceItem {
+  service: String!
+  dateOfService: String!
+  cost: Float!
+}
+
+type Claim {
+  id: ID!
+  reference: String!
+  date: String!
+  serviceDate: String!
+  status: ClaimStatus!
+  submitterName: String!
+  amounts: Amounts!
+  member: ClaimMember!
+  memberId: ID!
+  planId: ID!
+  primaryMemberId: ID!
+  providers: [Provider!]!
+  history: [ClaimHistory!]!
+}
+
+type ClaimHistory {
+  status: ClaimStatus!
+  date: String!
+  additionalNotes: String
+}
+
+type ClaimMember {
+  id: ID!
+  subscriberId: String!
+  firstName: String!
+  lastName: String!
+}
+
+type ClaimQuery {
+  getClaim(memberId: ID!, claimId: ID!): Claim!
+  getClaims(memberId: ID!, status: ClaimStatus, nextToken: String, pageSize: Int): GetClaimsResponse!
+  getLoggedInMemberClaims(status: ClaimStatus, nextToken: String, pageSize: Int): GetClaimsResponse!
+  getFamilyClaims(primaryMemberId: ID!, status: ClaimStatus, nextToken: String, pageSize: Int): GetClaimsResponse!
+  getClaimDocuments(memberId: ID!, claimId: ID!, nextToken: String, pageSize: Int): GetDocumentsResponse!
+  searchClaims(searchInput: ClaimSearchQueryInput!, nextToken: String, pageSize: Int): GetClaimsResponse!
+}
+
+input ClaimSearchQueryInput {
+  searchType: ClaimSearchType!
+  subscriberId: String!
+  date: String
+  reference: String
+}
+
+enum ClaimSearchType {
+  FAMILY
+  INDIVIDUAL
+}
+
+enum ClaimServiceLineStatus {
+  PENDING
+  PAID
+  DENIED
+  READY_TO_DENY
+  READY_TO_PAY
+}
+
+enum ClaimStatus {
+  PENDING
+  PAID
+  DENIED
+  READY_TO_DENY
+  READY_TO_PAY
+}
+
+enum ClaimType {
+  INSTITUTIONAL
+  PROFESSIONAL
+  PHARMACY
+}
+
+type Client {
+  id: ID!
+  externalId: String!
+  name: String!
+  clientType: ClientType!
+  description: String
+  isDraft: Boolean!
+  effectiveDate: String!
+  terminationDate: String
+  planPeriods: [PlanPeriod!]!
+}
+
+type ClientNetwork {
+  id: ID!
+  clientId: ID!
+  planPeriodId: ID!
+  networkId: ID!
+  tier: Int!
+  hierarchy: Int!
+  network: Network!
+}
+
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ClientType {
+  THIRD_PARTY_ADMINISTRATOR
+  EMPLOYER
+}
+
+enum CollectionEndpointType {
+  PROVIDER_PORTAL_ENDPOINT
+  ADMIN_PORTAL_ENDPOINT
+}
+
+type CombinedTriggeringProcedureCodes {
+  text: String!
+  episode1: String!
+  episode1TriggeringProcedureCodes: [String!]!
+  episode2: String!
+  episode2TriggeringProcedureCodes: [String!]!
+}
+
+enum CommunicationType {
+  PHONE
+  EMAIL
+  MAIL
+  TEXT
+}
+
+type ContactDetails {
+  salutation: Salutation!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String!
+}
+
+input ContactDetailsInput {
+  salutation: Salutation!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String!
+}
+
+enum ContactType {
+  ATTESTATION
+  CREDENTIALING
+}
+
+type Coordinates {
+  longitude: Float!
+  latitude: Float!
+}
+
+input CoordinatesInput {
+  latitude: Float!
+  longitude: Float!
+}
+
+input CreateClientInput {
+  externalId: String!
+  name: String!
+  clientType: ClientType!
+  description: String
+  isDraft: Boolean!
+  effectiveDate: String!
+  terminationDate: String
+  planPeriod: CreatePlanPeriodInput!
+}
+
+input CreateClientNetworksInput {
+  networkId: String!
+  tier: Int!
+  hierarchy: Int!
+}
+
+input CreateEmployerProfileInput {
+  name: String!
+  contactDetails: ContactDetailsInput!
+  assignedPlanIds: [ID!]!
+}
+
+input CreateFacilityInput {
+  organizationId: ID!
+  npi: String!
+  name: String!
+  address: AddressInput!
+  email: String!
+  phoneNumber: String!
+  description: String
+  taxId: String!
+}
+
+input CreateLearningResourceInput {
+  type: LearningResourceType!
+  category: LearningResourceCategory!
+  isMandatory: Boolean!
+  linkUrl: String
+  fileName: String
+  name: String!
+  description: String!
+  notifyUsers: Boolean!
+}
+
+input CreateNetworkInput {
+  name: String!
+  description: String
+  effectiveDate: String!
+  terminationDate: String
+  networkType: NetworkType!
+  isDraft: Boolean!
+}
+
+input CreateNotificationDelegationInput {
+  userId: ID!
+  delegateUserId: ID!
+  delegationType: DelegationType!
+}
+
+input CreateNotificationInput {
+  providerPortalUserId: ID!
+  providerOrganizationId: ID!
+  linkedEntityId: ID
+}
+
+input CreatePlanInput {
+  name: String!
+  category: String!
+}
+
+input CreatePlanPeriodInput {
+  numberOfTiers: Int!
+  isDraft: Boolean!
+  effectiveDate: String!
+  terminationDate: String!
+  clientNetworks: [CreateClientNetworksInput!]!
+}
+
+input CreateProviderOrganizationAdminInput {
+  salutation: Salutation!
+  firstName: String!
+  lastName: String!
+  email: String!
+  npi: String
+}
+
+input CreateProviderOrganizationInput {
+  name: String!
+  address: AddressInput!
+  email: String!
+  phoneNumber: String!
+  description: String
+  imageUrl: String
+  taxId: String!
+}
+
+input CreateProviderPortalUserInput {
+  salutation: Salutation!
+  firstName: String!
+  lastName: String!
+  email: String!
+  npi: String
+  role: InputRole!
+  contactType: InputContactType
+}
+
+input CreateSubDivisionInput {
+  employerProfileId: ID!
+  name: String!
+  inheritedContactDetails: Boolean!
+  contactDetails: ContactDetailsInput
+  inheritedPlans: Boolean!
+  assignedPlanIds: [ID!]
+}
+
+enum DelegationType {
+  INTERNAL
+  EXTERNAL
+}
+
+type Document {
+  id: String!
+  type: DocumentType!
+  url: String!
+  date: String!
+  fileSize: String!
+  name: String!
+}
+
+enum DocumentType {
+  EXPLANATION_OF_BENEFITS
+}
+
+type EmployerProfile {
+  id: ID!
+  name: String!
+  slug: String!
+  uniqueCode: String!
+  url: String!
+  expiresAt: String
+  contactDetails: ContactDetails!
+  status: EmployerProfileStatus!
+  subDivisions: [SubDivision!]
+  plans: [PreEnrollmentPlan!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+input EmployerProfileSearchQueryInput {
+  name: String
+  uniqueCode: String
+  status: EmployerProfileStatus
+}
+
+enum EmployerProfileStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type EpisodeExclusions {
+  minAge: Int
+  memberEnrollment: String!
+  siteOfService: String!
+  clinicalExclusions: String!
+}
+
+type ExplanationsOfPayment {
+  id: ID!
+  fileName: String!
+  statementDate: String!
+  taxId: String!
+  statementId: String!
+  createdAt: String!
+  updatedAt: String!
+  file: ExplanationsOfPaymentFile
+}
+
+type ExplanationsOfPaymentFile {
+  url: String!
+  fileSize: String!
+}
+
+type Facility {
+  id: ID!
+  name: String!
+  npi: String!
+  address: Address!
+  email: String!
+  phoneNumber: String!
+  description: String
+  taxId: String!
+}
+
+type GetActiveEmployerProfilesResponse {
+  items: [EmployerProfile!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetAllAttestationsResponse {
+  items: [PractitionerAttestation!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetAllExplanationsOfPaymentResponse {
+  items: [ExplanationsOfPayment!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetAllNetworksResponse {
+  items: [Network!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetAttestationHistoryResponse {
+  items: [PractitionerAttestation!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetAvailablePlansResponse {
+  items: [AvailablePlan!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetBenefitsResponse {
+  items: [Benefit!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetCardsResponse {
+  items: [Card!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetCarePackagesResponse {
+  items: [CarePackage!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetCarePackageUsageResponse {
+  items: [CarePackageUsage!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetClaimsResponse {
+  items: [Claim!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetClientsResponse {
+  items: [Client!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetCurrentAttestationsResponse {
+  items: [PractitionerAttestation!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetDependentsResponse {
+  items: [Member!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetDocumentsResponse {
+  items: [Document!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetEmployerProfileLogoUploadUrlResponse {
+  url: String!
+}
+
+type GetEmployerProfileSearchResponse {
+  items: [EmployerProfile!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetEmployerProfilesResponse {
+  items: [EmployerProfile!]!
+  nextToken: String
+  pageSize: Int
+}
+
+input GetExplanationsOfPaymentsInput {
+  date: String
+  endDate: String
+  fileName: String
+}
+
+type GetFacilitiesResponse {
+  items: [Facility!]!
+  nextToken: String
+  pageSize: Int
+}
+
+input GetLearningResourcesInput {
+  type: LearningResourceType
+  category: LearningResourceCategory
+  isMandatory: Boolean
+  searchTerm: String
+}
+
+type GetLearningResourcesResponse {
+  items: [LearningResource!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetLearningResourceUploadUrlResponse {
+  url: String!
+}
+
+type GetMemberSearchResponse {
+  items: [Member!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetMembersResponse {
+  items: [Member!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetNotificationsResponse {
+  items: [Notification!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetOrganizationsResponse {
+  items: [ProviderOrganization!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetPlansResponse {
+  items: [Plan!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetPlanUploadUrlResponse {
+  url: String!
+}
+
+type GetPractitionerAttestationsSearchResponse {
+  items: [PractitionerAttestation!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetPreEnrollmentPlansResponse {
+  items: [PreEnrollmentPlan!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetProviderPortalLearningResourcesResponse {
+  items: [ProviderPortalLearningResource!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetSpecialtiesResponse {
+  items: [Specialty!]!
+  page: Int!
+  pageSize: Int
+  totalHits: Int!
+}
+
+type GetUsersResponse {
+  items: [ProviderPortalUser!]!
+  nextToken: String
+  pageSize: Int
+}
+
+type GetUsersSearchResponse {
+  items: [ProviderPortalUser!]!
+  nextToken: String
+  pageSize: Int
+}
+
+enum InputContactType {
+  ATTESTATION
+  CREDENTIALING
+}
+
+enum InputRole {
+  ADMIN
+  USER
+  CREDENTIALING_USER
+}
+
+interface IProviderOrganization {
+  id: ID!
+  name: String!
+  address: Address!
+  email: String!
+  phoneNumber: String!
+  description: String
+  imageUrl: String
+  taxId: String!
+  status: ProviderOrganizationStatus!
+}
+
+type LearningResource implements BaseLearningResource {
+  id: ID!
+  type: LearningResourceType!
+  category: LearningResourceCategory!
+  isMandatory: Boolean!
+  linkUrl: String
+  fileName: String
+  name: String!
+  description: String!
+  createdAt: String!
+  updatedAt: String!
+  resourceFile: LearningResourceFile
+}
+
+enum LearningResourceCategory {
+  INSURANCE
+  HEALTHCARE
+  PRESCRIPTIONS
+}
+
+type LearningResourceFile {
+  url: String!
+  fileSize: String!
+}
+
+enum LearningResourceType {
+  VIDEO
+  DOCUMENT
+  LINK
+}
+
+type LinkedProviderOrganization implements IProviderOrganization {
+  id: ID!
+  name: String!
+  address: Address!
+  email: String!
+  phoneNumber: String!
+  description: String
+  imageUrl: String
+  access: UserAccess!
+  taxId: String!
+  status: ProviderOrganizationStatus!
+}
+
+input LocationInput {
+  distance: Int!
+  latitude: Float!
+  longitude: Float!
+}
+
+type MainAutoCompleteResponse {
+  practitioners: [Practitioner!]
+  specialties: [Specialty!]
+  facilities: [ProviderSearchFacility!]
+}
+
+type Member {
+  id: ID!
+  subscriberId: String!
+  firstName: String!
+  lastName: String!
+  salutation: Salutation!
+  gender: String!
+  dateOfBirth: String!
+  address: Address!
+  email: String!
+  phoneNumber: String!
+  preferredCommunicationMethod: CommunicationType!
+  relationship: Relationship!
+  rxStatus: RxStatus
+  socialStatus: SocialStatus
+  socialNeeds: SocialNeeds
+  employerLogo: String
+  advocatePhoneNumber: String
+  currentPlan: Plan
+}
+
+type MemberMutation {
+  verifySsnRegistration(verifySsnRegistrationInput: VerifySsnRegistrationInput): MemberRegistrationResult!
+  verifySubscriberIdRegistration(verifySubscriberIdRegistrationInput: VerifySubscriberIdRegistrationInput): MemberRegistrationResult!
+}
+
+type MemberQuery {
+  getLoggedInMember: Member!
+  getLoggedInMemberCards(nextToken: String, pageSize: Int): GetCardsResponse!
+  getLoggedInMemberDependents: GetDependentsResponse!
+  getMemberById(memberId: ID!): Member!
+  getPrimaryMemberByDependentId(dependentMemberId: ID!): Member!
+  searchMembers(searchInput: MemberSearchQueryInput!, nextToken: String, pageSize: Int): GetMemberSearchResponse!
+  getCarePackageUsageByMemberId(memberId: ID!, nextToken: String, pageSize: Int): GetCarePackageUsageResponse!
+  getFamilyCarePackageUsageByMemberId(primaryMemberId: ID!, nextToken: String, pageSize: Int): GetCarePackageUsageResponse!
+  getRiskScore(memberId: ID!): RiskScore
+  getDependentsByPrimaryMemberId(primaryMemberId: ID!): GetDependentsResponse!
+  compareVerificationCode(email: String!, uniqueCode: String!): MemberRegistrationResult
+}
+
+enum MemberRegistrationResult {
+  SUCCESS
+  FAILURE
+}
+
+input MemberSearchQueryInput {
+  subscriberId: String
+  firstName: String
+  lastName: String
+  dateOfBirth: String
+}
+
+type Modifiers {
+  key: String!
+  value: String!
+}
+
+type Mutation {
+  memberMutation: MemberMutation
+  providerPortalMutation: ProviderPortalMutation
+  xoAdminPortal: XOAdminPortalMutation
+}
+
+type Network {
+  id: ID!
+  name: String!
+  description: String
+  effectiveDate: String!
+  terminationDate: String
+  networkType: NetworkType!
+  isDraft: Boolean!
+}
+
+enum NetworkStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum NetworkType {
+  MEDICAL
+  OTHER
+}
+
+type Notification {
+  id: ID!
+  linkedEntityId: ID
+  title: String!
+  description: String!
+  type: NotificationType!
+  status: NotificationStatus!
+  medium: NotificationMedium!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type NotificationDelegate {
+  id: ID!
+  userId: ID!
+  providerOrganizationId: ID!
+  delegateUserId: ID!
+  delegationType: DelegationType!
+  firstName: String
+  lastName: String
+}
+
+type NotificationDelegation {
+  id: ID!
+  userId: ID!
+  providerOrganizationId: ID!
+  delegateUserId: ID!
+  delegationType: DelegationType!
+}
+
+enum NotificationMedium {
+  EMAIL
+  APP
+  ALL
+}
+
+enum NotificationStatus {
+  OPEN
+  DISMISSED
+}
+
+enum NotificationType {
+  SELF_ATTESTATION_EXPIRATION
+  ADMIN_ATTESTATION_EXPIRATION
+  SELF_ATTESTATION_REMINDER
+  ADMIN_ATTESTATION_REMINDER
+  LEARNING_RESOURCE_LINK_CREATED
+  LEARNING_RESOURCE_LINK_UPDATED
+  LEARNING_RESOURCE_FILE_CREATED
+  LEARNING_RESOURCE_FILE_UPDATED
+  CARE_PACKAGE_ATTESTATION
+  CREDENTIALING_USER_FIRST_ATTESTATION_REMINDER
+  CREDENTIALING_USER_SECOND_ATTESTATION_REMINDER
+  CREDENTIALING_USER_THIRD_ATTESTATION_REMINDER
+}
+
+type OpeningHours {
+  monday: String
+  tuesday: String
+  wednesday: String
+  thursday: String
+  friday: String
+  saturday: String
+  sunday: String
+}
+
+type Plan {
+  id: ID!
+  memberId: ID!
+  availablePlanId: ID!
+  types: [PlanType!]!
+  name: String!
+  groupNumber: String!
+  productNumber: Int!
+  benefitProvider: String!
+  startDate: String!
+  endDate: String!
+  status: PlanStatus!
+  medicalBenefitName: String!
+  medicalBenefitId: String!
+  inNetworkSpend: SpendInformation!
+  outOfNetworkSpend: SpendInformation!
+  familyInNetworkSpend: SpendInformation!
+  familyOutOfNetworkSpend: SpendInformation!
+  coInsurance: SpendInformation!
+  familyCoInsurance: SpendInformation!
+  employerName: String!
+  primaryCareProvider: String!
+  carePackageSpent: Float!
+  rxCoPay: Float!
+  medicalCoPay: Float!
+  coInsurancePercentage: Float!
+  subscriberId: String!
+  carePackageOutstandingBalance: CarePackageOutstandingBalance!
+  familyCarePackageOutstandingBalance: CarePackageOutstandingBalance!
+  benefits: [Benefit]
+}
+
+type PlanPeriod {
+  id: ID!
+  clientId: ID!
+  tiers: Int!
+  isDraft: Boolean!
+  effectiveDate: String!
+  terminationDate: String!
+  clientNetworks: [ClientNetwork!]
+}
+
+type PlanQuery {
+  getCurrentPlan(memberId: ID!): Plan!
+  getMemberCurrentPlan: Plan!
+  getMemberBenefits: [Benefit]
+}
+
+enum PlanStatus {
+  CURRENT
+  PAST
+  PENDING
+}
+
+enum PlanType {
+  MEDICAL
+  VISION
+  DRUG
+  DENTAL
+  SPENDING_ACCOUNT
+}
+
+type Practitioner {
+  id: String!
+  practitionerId: ID!
+  fullName: String!
+  firstName: String!
+  middleName: String
+  lastName: String!
+  title: String
+  suffix: String
+  gender: String
+  degree: String
+  email: String
+  medicalSchool: String
+  ethnicity: String
+  remoteServices: String
+  npi: String
+  specialties: [Specialty!]
+  languages: [String!]
+  locationId: ID!
+  locationName: String
+  isPrimary: Boolean
+  isVerified: Boolean
+  addressLine1: String
+  addressLine2: String
+  addressLine3: String
+  city: String
+  state: String
+  zip: String
+  county: String
+  metropolitanStatisticalArea: String
+  coordinates: Coordinates
+  tier: Tier
+  phoneNumber: String
+  phoneNumberPrefix: String
+  phoneNumberExtension: String
+  faxNumber: String
+  openingHours: OpeningHours
+  distance: Float
+  hospitalAffiliation: [String!]
+}
+
+type PractitionerAttestation {
+  attestant: Attestant
+  attestationId: ID!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  website: String!
+  address: Address!
+  speciality: String!
+  attestationStatus: AttestationStatus!
+  attestationExpiry: String!
+  changes: [AttestationChange!]
+  updatedAt: String!
+  userId: ID!
+  providerOrganizationId: ID!
+}
+
+input PractitionerAttestationSearchInput {
+  firstName: String
+  lastName: String
+  attestationStatus: AttestationStatus
+  indexType: CollectionEndpointType!
+}
+
+type PreEnrollmentPlan {
+  id: ID!
+  name: String!
+  category: String!
+  createdAt: String!
+  updatedAt: String!
+  file: PreEnrollmentPlanFile
+}
+
+type PreEnrollmentPlanFile {
+  url: String!
+  fileSize: String!
+  versions: [PreEnrollmentPlanFileVersion!]!
+}
+
+type PreEnrollmentPlanFileVersion {
+  name: String!
+  createdAt: String!
+  isCurrent: Boolean!
+}
+
+type PreEnrollmentPortalQuery {
+  getEmployerProfile(employerSlug: String): EmployerProfile!
+  getActiveEmployerProfiles(nextToken: String, pageSize: Int): GetActiveEmployerProfilesResponse!
+}
+
+enum PrescriptionType {
+  GENERIC
+  BRAND_NAME
+  NON_PREFERED
+  PREVENTIVE
+}
+
+type Provider {
+  type: String!
+  name: String!
+  taxId: String!
+  npi: String!
+}
+
+type ProviderOrganization implements IProviderOrganization {
+  id: ID!
+  name: String!
+  address: Address!
+  email: String!
+  phoneNumber: String!
+  description: String
+  imageUrl: String
+  taxId: String!
+  status: ProviderOrganizationStatus!
+}
+
+input ProviderOrganizationLinks {
+  providerOrganizationId: String!
+  role: InputRole!
+  contactType: InputContactType
+}
+
+input ProviderOrganizationSearchInput {
+  name: String
+  indexType: CollectionEndpointType!
+}
+
+enum ProviderOrganizationStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type ProviderPortalLearningResource implements BaseLearningResource {
+  id: ID!
+  type: LearningResourceType!
+  category: LearningResourceCategory!
+  isMandatory: Boolean!
+  linkUrl: String
+  fileName: String
+  name: String!
+  description: String!
+  bookmarked: Boolean!
+  createdAt: String!
+  updatedAt: String!
+  resourceFile: LearningResourceFile
+}
+
+type ProviderPortalMutation {
+  addUserToOrganization(addUserToOrganizationInput: AddUserToOrganizationInput): String!
+  createUser(portalUserInput: CreateProviderPortalUserInput): ProviderPortalUser!
+  deleteUser(userId: ID): ID!
+  removeUserFromOrganization(removeUserFromOrganizationInput: RemoveUserFromOrganizationInput): String!
+  resendInviteEmail(id: ID): ID!
+  updateUser(portalUserInput: UpdateProviderPortalUserInput): ProviderPortalUser!
+  updateUserPassword(updatePasswordInput: UpdateProviderPortalUserPasswordInput): ID!
+  updateUserStatus(updateStatusInput: UpdateUserStatusInput): ProviderPortalUser!
+  updateAttestation(updateAttestationInput: UpdateAttestationInput!): PractitionerAttestation!
+  dismissNotification(notificationId: ID!): ID!
+  dismissAllNotifications: ID!
+  updateCarePackageAttestationStatus(updateCarePackageAttestationStatusInput: UpdateCarePackageAttestationStatusInput!): ID!
+  toggleLearningResourceBookmark(learningResourceId: ID!): ID!
+  bulkUpdateAttestations(updateAttestationInputs: [UpdateAttestationInput!]!): [PractitionerAttestation!]!
+  updateAllAttestations: String!
+  createNotificationDelegations(createNotificationDelegationInputs: [CreateNotificationDelegationInput!]!): [NotificationDelegation!]!
+  deleteNotificationDelegation(notificationDelegationId: ID!): ID!
+}
+
+type ProviderPortalQuery {
+  getAttestationHistory(providerPortalUserId: ID!, nextToken: String, pageSize: Int): GetAttestationHistoryResponse!
+  getCurrentAttestation(providerPortalUserId: ID!): PractitionerAttestation!
+  getCurrentAttestations(nextToken: String, pageSize: Int): GetCurrentAttestationsResponse!
+  getExplanationsOfPayment(statementDate: String, id: ID): ExplanationsOfPayment!
+  getExplanationsOfPayments(getExplanationsOfPaymentsInput: GetExplanationsOfPaymentsInput!, nextToken: String, pageSize: Int): GetAllExplanationsOfPaymentResponse!
+  getLearningResources(getLearningResourcesInput: GetLearningResourcesInput!, nextToken: String, pageSize: Int, isBookmarked: Boolean): GetProviderPortalLearningResourcesResponse!
+  getLearningResource(id: ID): ProviderPortalLearningResource!
+  getLoggedInUser: ProviderPortalUser!
+  getNotifications(status: NotificationStatus, nextToken: String, pageSize: Int): GetNotificationsResponse!
+  getUsers(nextToken: String, pageSize: Int): GetUsersResponse!
+  searchUsers(searchInput: UserSearchQueryInput!, nextToken: String, pageSize: Int): GetUsersSearchResponse!
+  getFacilities(nextToken: String, pageSize: Int): GetFacilitiesResponse!
+  searchPractitionerAttestations(searchInput: PractitionerAttestationSearchInput!, nextToken: String, pageSize: Int): GetPractitionerAttestationsSearchResponse!
+  getDelegates(providerPortalUserId: ID!): [NotificationDelegate!]
+}
+
+type ProviderPortalUser {
+  id: ID!
+  npi: String
+  salutation: Salutation!
+  firstName: String!
+  lastName: String!
+  email: String!
+  providerOrganizations: [LinkedProviderOrganization]!
+  profileImageUrl: String
+  status: Status!
+}
+
+type ProviderSearchFacility {
+  locationId: ID!
+  locationName: String
+  isPrimary: Boolean
+  isVerified: Boolean
+  addressLine1: String
+  addressLine2: String
+  addressLine3: String
+  city: String
+  state: String
+  zip: String
+  county: String
+  metropolitanStatisticalArea: String
+  coordinates: Coordinates
+  tier: Tier!
+  phoneNumber: String
+  phoneNumberPrefix: String
+  phoneNumberExtension: String
+  faxNumber: String
+  openingHours: OpeningHours
+  distance: Float!
+  specialties: [Specialty!]
+  npi: String
+}
+
+type ProviderSearchPortalQuery {
+  searchPractitioners(searchPractitionersInput: SearchPractitionersInput!, page: Int!, pageSize: Int): SearchPractitionersResponse!
+  searchFacilities(searchFacilitiesInput: SearchFacilitiesInput!, page: Int!, pageSize: Int): SearchFacilitiesResponse!
+  getSpecialties(page: Int!, pageSize: Int): GetSpecialtiesResponse!
+  getPractitioner(practitionerId: ID!, locationId: ID!, coordinatesInput: CoordinatesInput!): Practitioner!
+  getFacility(locationId: ID!, coordinatesInput: CoordinatesInput!): ProviderSearchFacility!
+  autoCompleteSearch(autoCompleteSearchInput: AutoCompleteSearchInput!): AutoCompleteResponse!
+  mainAutoCompleteSearch(autoCompleteSearchInput: AutoCompleteSearchInput!): MainAutoCompleteResponse!
+  practitionerAutoCompleteSearch(autoCompleteSearchInput: AutoCompleteSearchInput!): [String!]
+  specialtyAutoCompleteSearch(searchQuery: String!): [String!]
+  specialtiesAutoCompleteSearch(searchQuery: String!): [Specialty!]
+  facilityAutoCompleteSearch(autoCompleteSearchInput: AutoCompleteSearchInput!): [String!]
+}
+
+type Query {
+  member: MemberQuery
+  plan: PlanQuery
+  claim: ClaimQuery
+  benefits: BenefitsQuery
+  carePackages: CarePackagesQuery
+  availablePlans: AvailablePlansQuery
+  preEnrollmentPortal: PreEnrollmentPortalQuery
+  providerPortal: ProviderPortalQuery
+  providerSearchPortal: ProviderSearchPortalQuery
+  xoAdminPortal: XOAdminPortalQuery
+}
+
+enum Recipients {
+  GLOBAL
+  ORGANIZATION
+  FACULTY
+  INDIVIDUAL
+}
+
+input RegistrationDetailsInput {
+  firstName: String!
+  lastName: String!
+  dateOfBirth: String!
+  email: String!
+}
+
+enum Relationship {
+  PRIMARY
+  SPOUSE
+  DEPENDENT
+}
+
+input RemoveUserFromOrganizationInput {
+  userId: ID!
+  organizationId: String!
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  VERY_HIGH
+  EXTREMELY_HIGH
+}
+
+type RiskScore {
+  id: String!
+  memberId: String!
+  score: String!
+  level: RiskLevel!
+}
+
+enum Role {
+  ADMIN
+  USER
+  ORGANIZATION_ADMIN
+  CREDENTIALING_USER
+}
+
+enum RxStatus {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Salutation {
+  MR
+  MS
+  MRS
+  MISS
+  DR
+  UNKNOWN
+}
+
+input SaveAttestationCycleInput {
+  startDate: String!
+  endDate: String!
+  firstAttestationReminder: Int!
+  secondAttestationReminder: Int!
+  thirdAttestationReminder: Int!
+}
+
+input SearchFacilitiesInput {
+  searchQuery: String
+  networkFilter: [Tier!]
+  specialtyFilter: [String!]
+  location: LocationInput!
+}
+
+type SearchFacilitiesResponse {
+  items: [ProviderSearchFacility!]
+  page: Int!
+  pageSize: Int
+  totalHits: Int!
+}
+
+input SearchPractitionersInput {
+  searchQuery: String
+  searchType: SearchPractitionersType!
+  location: LocationInput!
+  networkFilter: [Tier!]
+  specialtyFilter: [String!]
+  specialtyCodeFilter: [String!]
+  locationFilter: [ID!]
+}
+
+type SearchPractitionersResponse {
+  items: [Practitioner!]
+  page: Int!
+  pageSize: Int
+  totalHits: Int!
+}
+
+enum SearchPractitionersType {
+  PRACTITIONER
+  SPECIALTY
+  FACILITY
+}
+
+input SearchPreEnrollmentPlansQueryInput {
+  searchTerm: String
+}
+
+type ServiceLine {
+  number: Int!
+  fromDate: String!
+  toDate: String!
+  quantity: Int!
+  status: ClaimServiceLineStatus!
+  amount: Float!
+  placeOfService: Int!
+  procedureCode: String!
+  procedureCodeDescription: String
+  revenueCode: String!
+  diagnosisCodes: [String!]!
+  modifiers: [Modifiers!]!
+  amounts: Amounts!
+  mrCode: String
+  pbCode: String
+  familyCode: String
+  benefitCode: String
+}
+
+enum SocialNeeds {
+  TRANSPORT
+  FOOD
+}
+
+enum SocialStatus {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+type Specialty {
+  code: String!
+  grouping: String!
+  classification: String!
+  specialization: String
+  displayName: String!
+}
+
+type SpendInformation {
+  id: ID!
+  deductible: Float!
+  deductibleSpent: Float!
+  outOfPocketMax: Float!
+  outOfPocketMaxSpent: Float!
+}
+
+enum Status {
+  Pending
+  Active
+  Inactive
+  Expired
+}
+
+type SubDivision {
+  id: ID!
+  name: String!
+  slug: String!
+  uniqueCode: String!
+  url: String!
+  expiresAt: String
+  inheritedContactDetails: Boolean!
+  contactDetails: ContactDetails
+  inheritedPlans: Boolean!
+  plans: [PreEnrollmentPlan!]
+  status: EmployerProfileStatus!
+  createdAt: String!
+  updatedAt: String!
+}
+
+enum Tier {
+  HIGH_PERFORMANCE_NETWORK
+  XO_HEALTH_NETWORK
+  OUT_OF_NETWORK
+}
+
+input UpdateAttestationInput {
+  attestationId: ID!
+  userId: ID!
+  facilityId: ID!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  website: String!
+  address: AddressInput!
+  speciality: String!
+  attestationStatus: AttestationStatus!
+}
+
+input UpdateCarePackageAttestationStatusInput {
+  notificationId: ID!
+  carePackageAttestationId: ID!
+  carePackageAttestationStatus: CarePackageAttestationStatus!
+}
+
+input UpdateClientInput {
+  id: ID!
+  externalId: String!
+  name: String!
+  clientType: ClientType!
+  description: String
+  isDraft: Boolean!
+  effectiveDate: String!
+  terminationDate: String
+  planPeriod: UpdatePlanPeriodInput!
+}
+
+input UpdateEmployerProfileInput {
+  id: ID!
+  contactDetails: ContactDetailsInput!
+  uniqueCode: String!
+  expiresAt: String
+  status: EmployerProfileStatus!
+}
+
+input UpdateEmployerProfilePlansInput {
+  employerProfileSlug: String!
+  assignedPlanIds: [ID!]!
+}
+
+input UpdateEmployerStatusInput {
+  status: EmployerProfileStatus!
+  id: ID!
+}
+
+input UpdateFacilityInput {
+  facilityId: ID!
+  organizationId: ID!
+  npi: String!
+  name: String!
+  address: AddressInput!
+  email: String!
+  phoneNumber: String!
+  description: String
+  taxId: String!
+}
+
+input UpdateLearningResourceInput {
+  id: ID!
+  type: LearningResourceType!
+  category: LearningResourceCategory!
+  isMandatory: Boolean!
+  linkUrl: String
+  fileName: String
+  name: String!
+  description: String!
+  notifyUsers: Boolean!
+}
+
+input UpdateLearningResourceIsMandatoryInput {
+  id: ID!
+  isMandatory: Boolean!
+}
+
+input UpdateNetworkInput {
+  id: ID!
+  name: String
+  description: String
+  terminationDate: String
+  effectiveDate: String!
+  networkType: NetworkType!
+  isDraft: Boolean!
+}
+
+input UpdatePlanInput {
+  planId: ID!
+  name: String!
+  category: String!
+}
+
+input UpdatePlanPeriodInput {
+  id: ID!
+  numberOfTiers: Int!
+  isDraft: Boolean!
+  effectiveDate: String!
+  terminationDate: String!
+  clientNetworks: [CreateClientNetworksInput!]!
+}
+
+input UpdateProviderPortalUserInput {
+  id: ID!
+  salutation: Salutation!
+  firstName: String!
+  lastName: String!
+  email: String!
+  npi: String
+  status: Status!
+  profileImageUrl: String
+  role: InputRole
+  contactType: InputContactType
+}
+
+input UpdateProviderPortalUserPasswordInput {
+  password: String!
+}
+
+input UpdateSubDivisionInput {
+  subDivisionId: ID!
+  name: String!
+  inheritedContactDetails: Boolean!
+  contactDetails: ContactDetailsInput
+  inheritedPlans: Boolean!
+  assignedPlanIds: [ID!]
+  uniqueCode: String!
+  expiresAt: String
+  status: EmployerProfileStatus!
+}
+
+input UpdateUserStatusInput {
+  id: ID!
+  status: Status!
+}
+
+type UserAccess {
+  lastAccessed: String
+  role: Role!
+  contactType: ContactType
+}
+
+input UserSearchQueryInput {
+  firstName: String
+  lastName: String
+  email: String
+}
+
+input VerifySsnRegistrationInput {
+  ssn: String!
+  registrationDetails: RegistrationDetailsInput!
+}
+
+input VerifySubscriberIdRegistrationInput {
+  subscriberId: String!
+  registrationDetails: RegistrationDetailsInput!
+}
+
+type XOAdminPortalMutation {
+  createProviderOrganization(providerOrganization: CreateProviderOrganizationInput!, providerOrganizationAdmin: CreateProviderOrganizationAdminInput!): ProviderOrganization!
+  createProviderOrganizationAdmin(providerOrganizationId: ID!, providerOrganizationAdmins: [CreateProviderOrganizationAdminInput]!): [ProviderPortalUser]!
+  createFacility(facility: CreateFacilityInput!): Facility!
+  deleteFacility(facilityId: ID!): ID!
+  updateFacility(facility: UpdateFacilityInput!): Facility!
+  updateProviderOrganizationStatus(providerOrganizationId: ID!, status: ProviderOrganizationStatus!): ProviderOrganization!
+  saveAttestationCycle(saveAttestationCycle: SaveAttestationCycleInput): AttestationCycle!
+  createEmployerProfile(employerProfile: CreateEmployerProfileInput!): EmployerProfile!
+  createPlan(plan: CreatePlanInput!): PreEnrollmentPlan!
+  updatePlan(plan: UpdatePlanInput!): PreEnrollmentPlan!
+  deletePlan(planId: ID!): ID!
+  createSubDivision(subDivision: CreateSubDivisionInput!): SubDivision!
+  updateSubDivision(subDivision: UpdateSubDivisionInput!): SubDivision!
+  deleteSubDivision(subDivisionId: ID!, employerProfileSlug: String!): ID!
+  updateEmployerProfilePlans(input: UpdateEmployerProfilePlansInput!): EmployerProfile!
+  updateEmployerProfile(updateEmployerProfileInput: UpdateEmployerProfileInput!): EmployerProfile!
+  updateEmployerProfileStatus(updateEmployerStatusInput: UpdateEmployerStatusInput!): EmployerProfile!
+  resendAttestationReminder(createNotificationInput: [CreateNotificationInput!]!): [ID!]!
+  createLearningResource(learningResource: CreateLearningResourceInput!): LearningResource!
+  deleteLearningResource(learningResourceId: ID!): ID!
+  updateLearningResource(learningResource: UpdateLearningResourceInput!): LearningResource!
+  updateLearningResourceIsMandatory(learningResource: UpdateLearningResourceIsMandatoryInput!): LearningResource!
+  createUserAdmin(portalUserInput: CreateProviderPortalUserInput!, providerOrganizationId: ID!): ProviderPortalUser!
+  updateUserAdmin(portalUserInput: UpdateProviderPortalUserInput!, providerOrganizationId: ID!): ProviderPortalUser!
+  updateUserStatusAdmin(updateStatusInput: UpdateUserStatusInput!, providerOrganizationId: ID!): ProviderPortalUser!
+  resendInviteEmailAdmin(id: ID!, providerOrganizationId: ID!): ID!
+  createNetwork(network: CreateNetworkInput!): Network!
+  updateClient(updateClientConfigurationInput: UpdateClientInput!): Client!
+  createClient(createClientConfigurationInput: CreateClientInput!): Client!
+  createPlanPeriod(clientId: ID!, createPlanPeriodInput: CreatePlanPeriodInput!): PlanPeriod!
+  updatePlanPeriod(clientId: ID!, updatePlanPeriodInput: UpdatePlanPeriodInput!): PlanPeriod!
+  updateNetwork(network: UpdateNetworkInput!): Network!
+  deleteNetwork(networkId: ID!): ID!
+}
+
+type XOAdminPortalQuery {
+  getOrganizations(nextToken: String, pageSize: Int): GetOrganizationsResponse!
+  getOrganization(providerOrganizationId: ID!): ProviderOrganization!
+  getOrganizationAdmins(providerOrganizationId: ID!): [ProviderPortalUser!]!
+  getAttestationCycle: AttestationCycle!
+  getEmployerProfiles(nextToken: String, pageSize: Int): GetEmployerProfilesResponse!
+  getEmployerProfile(employerProfileSlug: String!): EmployerProfile!
+  getPlanUploadUrl(planId: ID!): GetPlanUploadUrlResponse!
+  getPreEnrollmentPlans(searchInput: SearchPreEnrollmentPlansQueryInput!, nextToken: String, pageSize: Int): GetPreEnrollmentPlansResponse!
+  getAllPreEnrollmentPlans: [PreEnrollmentPlan!]!
+  getAllAttestations(status: AttestationStatus, nextToken: String, pageSize: Int): GetAllAttestationsResponse!
+  getEmployerProfileLogoUploadUrl(employerProfileSlug: String!, fileName: String!, contentType: String!): GetEmployerProfileLogoUploadUrlResponse!
+  getAttestationHistoryAdmin(nextToken: String, pageSize: Int, providerOrganizationId: ID!, providerPortalUserId: ID!): GetAttestationHistoryResponse!
+  getCurrentAttestationAdmin(providerOrganizationId: ID!, providerPortalUserId: ID!): PractitionerAttestation!
+  getLearningResourcesAdmin(getLearningResourcesInput: GetLearningResourcesInput!, nextToken: String, pageSize: Int): GetLearningResourcesResponse!
+  getLearningResourceAdmin(id: ID): LearningResource!
+  getLearningResourceUploadUrl(learningResourceId: ID!, fileName: String!, contentType: String!): GetLearningResourceUploadUrlResponse!
+  searchEmployerProfiles(searchInput: EmployerProfileSearchQueryInput!, nextToken: String, pageSize: Int): GetEmployerProfileSearchResponse!
+  searchPractitionerAttestationsAdmin(searchInput: PractitionerAttestationSearchInput!, nextToken: String, pageSize: Int): GetPractitionerAttestationsSearchResponse!
+  searchProviderOrganizations(searchInput: ProviderOrganizationSearchInput!, nextToken: String, pageSize: Int): GetOrganizationsResponse!
+  getAllNetworks(status: NetworkStatus, nextToken: String, pageSize: Int): GetAllNetworksResponse!
+  getClients(nextToken: String, pageSize: Int, status: ClientStatus): GetClientsResponse!
+  getClient(clientId: ID!): Client!
+  getNetwork(networkId: ID!): Network!
+}
+

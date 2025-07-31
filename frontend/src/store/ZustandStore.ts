@@ -5,6 +5,7 @@ import type {MockAppSyncTestTool, MockAppSyncTestToolReducers} from "./types/Moc
 import type {Invocation} from "./types/store/Invocation";
 
 const initialState: MockAppSyncTestTool = {
+  currentView: "invokeLambda",
   invocations: [],
   socketInfo: {
     connected: false,
@@ -14,6 +15,9 @@ const initialState: MockAppSyncTestTool = {
 export const useMockAppSyncTestToolStore = create(
   devtools(immer<MockAppSyncTestTool & MockAppSyncTestToolReducers>(set => ({
     ...initialState,
+    setCurrentView: (view: MockAppSyncTestTool["currentView"]) => set({
+      currentView: view
+    }),
     setInvocations: (payload: MockAppSyncTestTool["invocations"]) => set({
       invocations: payload
     }),

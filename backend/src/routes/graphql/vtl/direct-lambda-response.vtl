@@ -1,0 +1,5 @@
+#if (!$util.isNull($ctx.result.Error))
+  $util.error($ctx.result.Error.Message, $ctx.result.Error.Type)
+#end
+
+$utils.toJson($ctx.result)

@@ -3,6 +3,7 @@ import type {Invocation} from "./store/Invocation";
 import type {ZustandSetFunction} from "./UseZustandState";
 
 export interface MockAppSyncTestTool {
+  currentView: "invokeLambda" | "appSync";
   invocations: Invocation[];
   socketInfo: SocketInfo;
 }
