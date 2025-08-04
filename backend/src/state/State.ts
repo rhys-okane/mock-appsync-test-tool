@@ -1,5 +1,14 @@
-import {Response} from "express";
-import {Invocation} from "../types/Invocation";
+import { Response } from "express";
+import { Invocation } from "../types/Invocation";
 
 export const invocations: Invocation[] = [];
 export const lambdasAwaitingPayloads: Response[] = [];
+
+setInterval(() => {
+  const now = Date.now();
+  invocations.forEach((invocation) => {
+    if (now - invocation.createdAt.getTime() > 60000) {
+      invocation.status = "failure";
+    }
+  });
+}, 60000);

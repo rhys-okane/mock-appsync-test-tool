@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState, type FC } from "react";
+import { useCallback, useMemo, useState, type FC } from "react";
 import { invokeLambdaAPI } from "../../../api/InvokeLambdaAPI";
 import { useAddInvocationState } from "../../../store/hooks/UseAddInvocationState";
-import {useInvocationsState} from "../../../store/hooks/UseInvocationsState";
+import { useInvocationsState } from "../../../store/hooks/UseInvocationsState";
 
 export const InvokeLambda: FC = () => {
   const [payload, setPayload] = useState("");
@@ -18,7 +18,7 @@ export const InvokeLambda: FC = () => {
 
       setApiRequestSending(false);
     })();
-  }, [payload]);
+  }, [addInvocation, payload]);
 
   // TODO: Show a list of previous invocations like the mock lambda test tool
   const response = useMemo(() => {
@@ -28,14 +28,17 @@ export const InvokeLambda: FC = () => {
     }
 
     if (latestInvocation.status === "executing") {
-      return `Executing...`
+      return `Executing...`;
     }
 
     if (latestInvocation.status === "pending") {
       return `Waiting for lambda...`;
     }
 
-    if (latestInvocation.status !== "failure" && latestInvocation.status !== "success") {
+    if (
+      latestInvocation.status !== "failure" &&
+      latestInvocation.status !== "success"
+    ) {
       return `Unknown status: ${latestInvocation.status}`;
     }
 

@@ -2,8 +2,7 @@ import { Amplify } from "aws-amplify";
 import { events } from "aws-amplify/data";
 import { Invocation } from "../types/Invocation";
 import { AppSyncResolverEvent } from "aws-lambda";
-import { invocations } from "../state/State";
-import { invokeLambdaFromQueue } from "../shared/InvokeLambdaFromQueue";
+import {lambdaInvocationEventEmitter} from "../lambda-event-queue/LambdaInvocationEventQueue";
 
 interface ChannelEventWrapper {
   type: "data";
@@ -54,18 +53,7 @@ export async function listenForAppSyncEvents() {
         origin: "appsync",
       };
 
-      invocations.push(invocation);
-      try {
-        invokeLambdaFromQueue(invocation);
-      } catch {
-        console.error(`[ERROR] Failed to invoke lambda ${invocation.lambdaEventId} from queue - no handlers available`);
-        await events.post(`/default/${data.event.lambdaEventId}`, {
-          status: "error",
-          payload: JSON.stringify({
-            error: "No lambda handlers available",
-          }),
-        });
-      }
+      lambdaInvocationEventEmitter.emit("invoke", invocation);
     },
     error: (error: Error) => {
       console.error("Error receiving AppSync event:", error);

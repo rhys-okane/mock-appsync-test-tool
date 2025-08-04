@@ -7,17 +7,20 @@ import { listenOnLambdaRuntimeApiRoutes } from "./api-routes/lambda-runtime-api/
 import bodyParser from "body-parser";
 import { listenForAppSyncEvents } from "./appsync-events/ListenForAppSyncEvents";
 import { configDotenv } from "dotenv";
-import {listenForLambdaLocalInvocation} from "./api-routes/local-invocation/ListenForLambdaLocalInvocation";
+import { listenForLambdaLocalInvocation } from "./api-routes/local-invocation/ListenForLambdaLocalInvocation";
 import path from "path";
+import { handleLambdaConnectionEventQueue } from "./lambda-event-queue/LambdaConnectionEventQueue";
+import { handleLambdaInvocationEventQueue } from "./lambda-event-queue/LambdaInvocationEventQueue";
+import { ServerToClientEvents } from "./socket.io/types/SocketServer";
 
 configDotenv({
   path: [
     ".env",
     // Load top level .env file
     path.resolve(__dirname, "../../.env"),
-  ]
+  ],
 });
-console.log(path.resolve(__dirname, "../../.env"))
+console.log(path.resolve(__dirname, "../../.env"));
 
 const app = express();
 
@@ -29,13 +32,17 @@ app.use(
 );
 
 const server = http.createServer(app);
-const io = new Server(server, {
+
+const io = new Server<never, ServerToClientEvents>(server, {
   path: "/socket.io",
 });
 
 listenOnLambdaRuntimeApiRoutes(app, io);
-listenForLambdaLocalInvocation(app, io);
+listenForLambdaLocalInvocation(app);
 listenForAppSyncEvents();
+
+handleLambdaConnectionEventQueue();
+handleLambdaInvocationEventQueue(io);
 
 io.on("connection", (socket) => {
   console.log("Frontend connected");

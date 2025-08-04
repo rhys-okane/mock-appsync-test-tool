@@ -1,16 +1,14 @@
 import { useState, type FC } from "react";
 import schemaSDL from "./merged-schema.graphql?raw";
-import {GraphiQLProvider, QueryEditor} from "@graphiql/react";
-import {buildClientSchema, buildSchema} from "graphql";
-import {createGraphiQLFetcher} from "@graphiql/toolkit";
-
-
+import { GraphiQLProvider, QueryEditor } from "@graphiql/react";
+import { buildClientSchema, buildSchema } from "graphql";
+import { createGraphiQLFetcher } from "@graphiql/toolkit";
 
 export const AppSync: FC = () => {
   const [gql, setGql] = useState("");
-  
+
   const schema = buildSchema(schemaSDL);
-  const fetcher = createGraphiQLFetcher({ url: '' });
+  const fetcher = createGraphiQLFetcher({ url: "" });
   return (
     <div className="w-full h-full flex items-center justify-center gap-12">
       <div className="grid grid-cols-2 pl-24 w-full h-full">

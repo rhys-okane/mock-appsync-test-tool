@@ -1,10 +1,15 @@
+import {invocations} from "../../../state/State";
 import { Invocation } from "../../../types/Invocation";
 import { Response } from "express";
 
 export const invokeLambdaWithExpressResponse = async (invocation: Invocation, res: Response) => {
   const id = invocation.lambdaEventId;
-
-  invocation.status = "executing";
+  
+  invocations.push({
+    ...invocation,
+    createdAt: new Date(),
+    status: "executing",
+  });
 
   res
     .status(200)

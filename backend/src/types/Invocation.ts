@@ -3,7 +3,8 @@ interface BaseInvocation {
   payload: string;
   status: "pending" | "executing" | "failure" | "success";
 
-  origin?: "appsync"
+  origin: "appsync" | "api";
+  createdAt: Date;
 }
 
 export interface IncompleteInvocation extends BaseInvocation {

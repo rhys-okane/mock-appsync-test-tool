@@ -1,28 +1,23 @@
 import { Application, Router } from "express";
-import { invocations, lambdasAwaitingPayloads } from "../../state/State";
-import { Server } from "socket.io";
-import { invokeLambdaWithExpressResponse } from "./utils/InvokeLambdaWithExpressResponse";
+import { invocations } from "../../state/State";
 import { Invocation } from "../../types/Invocation";
 import EventEmitter from "node:events";
 import { events } from "aws-amplify/data";
-import {Response} from "express";
+import { Response } from "express";
+import { newLambdaConnectionEventEmitter } from "../../lambda-event-queue/LambdaConnectionEventQueue";
+import { SocketServer } from "../../socket.io/types/SocketServer";
 
 export const lambdaResponseEventEmitter = new EventEmitter();
 
-export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => {
+export const listenOnLambdaRuntimeApiRoutes = (
+  app: Application,
+  io: SocketServer,
+) => {
   const router = Router();
   app.use("/2018-06-01", router);
 
   router.get("/runtime/invocation/next", (req, res) => {
-    console.log("the lambda asked to be invoked");
-
-    const invocation = invocations.find((inv) => inv.status === "pending");
-
-    if (!invocation) {
-      console.log("No invocations available, adding to waiting list");
-      lambdasAwaitingPayloads.push(res);
-      return;
-    }
+    newLambdaConnectionEventEmitter.emit("lambdaConnected", res);
   });
 
   router.post("/runtime/invocation/:invocationId/:type", (req, res) => {
@@ -43,14 +38,16 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
 
     const invocationId = req.params.invocationId;
 
-    const invocation = invocations.find(
+    const invocationIndex = invocations.findIndex(
       (inv) => inv.lambdaEventId === invocationId,
     );
 
-    if (!invocation) {
+    if (invocationIndex === -1) {
       console.error(`No invocation found with ID: ${invocationId}`);
       return res.status(404).send("Not Found: Invocation not found");
     }
+
+    const invocation = invocations[invocationIndex];
 
     if (invocation.status !== "executing") {
       errorHandler(
@@ -68,7 +65,7 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
       responsePayload: JSON.stringify(req.body, null, 2),
     };
 
-    invocations[invocations.indexOf(invocation)] = updatedInvocation;
+    invocations[invocationIndex] = updatedInvocation;
 
     console.log(`Invocation ${invocationId} completed`);
     res.status(204).send();
@@ -77,7 +74,7 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
     lambdaResponseEventEmitter.emit("invocationCompleted", updatedInvocation);
 
     if (invocation.origin === "appsync") {
-      console.log(updatedInvocation.responsePayload)
+      console.log(updatedInvocation.responsePayload);
       // Post the response back to the AppSync channel
       events
         .post(`/default/${invocation.lambdaEventId}`, {
@@ -96,16 +93,15 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
 
 function errorHandler(error: string, invocation: Invocation, res: Response) {
   console.error("Error during invocation:", error);
-  
+
   res.status(500).send("Internal Server Error: " + error);
 
   if (invocation.origin === "appsync") {
-    events
-    .post(`/default/${invocation.lambdaEventId}`, {
+    events.post(`/default/${invocation.lambdaEventId}`, {
       status: "error",
       payload: JSON.stringify({
         error: error,
-      })
-    })
+      }),
+    });
   }
 }
