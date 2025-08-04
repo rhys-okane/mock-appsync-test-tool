@@ -2,6 +2,8 @@ interface BaseInvocation {
   lambdaEventId: string;
   payload: string;
   status: "pending" | "executing" | "failure" | "success";
+
+  origin?: "appsync"
 }
 
 export interface IncompleteInvocation extends BaseInvocation {

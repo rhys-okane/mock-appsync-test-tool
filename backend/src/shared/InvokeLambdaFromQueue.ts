@@ -1,5 +1,5 @@
-import {lambdasAwaitingPayloads} from "../state/State";
-import {Invocation} from "../types/Invocation";
+import { lambdasAwaitingPayloads } from "../state/State";
+import { Invocation } from "../types/Invocation";
 
 export const invokeLambdaFromQueue = (invocation: Invocation) => {
   const availableLambda = lambdasAwaitingPayloads.shift();
@@ -11,16 +11,16 @@ export const invokeLambdaFromQueue = (invocation: Invocation) => {
 
   invocation.status = "executing";
 
-    availableLambda
-      .status(200)
-      .set({
-        "Lambda-Runtime-Aws-Request-Id": id,
-        "Lambda-Runtime-Deadline-Ms": Date.now() + 30000,
-        "Lambda-Runtime-Invoked-Function-Arn":
-          "arn:aws:lambda:us-east-1:123456789012:function:my-function",
-        "Lambda-Runtime-Trace-Id": id,
-      })
-      .send(invocation.payload);
+  availableLambda
+    .status(200)
+    .set({
+      "Lambda-Runtime-Aws-Request-Id": id,
+      "Lambda-Runtime-Deadline-Ms": Date.now() + 30000,
+      "Lambda-Runtime-Invoked-Function-Arn":
+        "arn:aws:lambda:us-east-1:123456789012:function:my-function",
+      "Lambda-Runtime-Trace-Id": id,
+    })
+    .send(invocation.payload);
 
-    console.log(`Invocation ${id} sent to lambda`);
-}
+  console.log(`Invocation ${id} sent to lambda`);
+};

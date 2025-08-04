@@ -1,23 +1,24 @@
 import { Application, Router } from "express";
 import { invocations, lambdasAwaitingPayloads } from "../../state/State";
 import { Server } from "socket.io";
-import {invokeLambda} from "../../shared/InvokeLambda";
-import {Invocation} from "../../types/Invocation";
-import EventEmitter from 'node:events';
+import { invokeLambda } from "../../shared/InvokeLambda";
+import { Invocation } from "../../types/Invocation";
+import EventEmitter from "node:events";
+import { events } from "aws-amplify/data";
 
 export const lambdaResponseEventEmitter = new EventEmitter();
 
-export const listenOnLambdaApiRoutes = (app: Application, io: Server) => {
+export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => {
   const router = Router();
   app.use("/2018-06-01", router);
 
   router.get("/runtime/invocation/next", (req, res) => {
     console.log("the lambda asked to be invoked");
 
-    const invocation = invocations.find(inv => inv.status === "pending");
+    const invocation = invocations.find((inv) => inv.status === "pending");
 
     if (!invocation) {
-        console.log("No invocations available, adding to waiting list");
+      console.log("No invocations available, adding to waiting list");
       lambdasAwaitingPayloads.push(res);
       return;
     }
@@ -42,7 +43,6 @@ export const listenOnLambdaApiRoutes = (app: Application, io: Server) => {
     }
 
     const invocationId = req.params.invocationId;
-    console.log(invocations);
 
     const invocation = invocations.find(
       (inv) => inv.lambdaEventId === invocationId,
@@ -65,7 +65,7 @@ export const listenOnLambdaApiRoutes = (app: Application, io: Server) => {
       ...invocation,
       status: type === "response" ? "success" : "failure",
       responsePayload: JSON.stringify(req.body, null, 2),
-    }
+    };
 
     invocations[invocations.indexOf(invocation)] = updatedInvocation;
 
@@ -74,5 +74,20 @@ export const listenOnLambdaApiRoutes = (app: Application, io: Server) => {
 
     io.emit("invocationCompleted", updatedInvocation);
     lambdaResponseEventEmitter.emit("invocationCompleted", updatedInvocation);
+
+    if (invocation.origin === "appsync") {
+      // Post the response back to the AppSync channel
+      events
+        .post(`/default/${invocation.lambdaEventId}`, {
+          status: type,
+          payload: updatedInvocation.responsePayload,
+        })
+        .then(() => {
+          console.log("Successfully posted response to AppSync channel");
+        })
+        .catch((err) => {
+          console.error("Failed to post response to AppSync channel:", err);
+        });
+    }
   });
 };
