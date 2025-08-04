@@ -2,7 +2,7 @@ import { Amplify } from "aws-amplify";
 import { events } from "aws-amplify/data";
 import { Invocation } from "../types/Invocation";
 import { AppSyncResolverEvent } from "aws-lambda";
-import {lambdaInvocationEventEmitter} from "../lambda-event-queue/LambdaInvocationEventQueue";
+import { lambdaInvocationEventEmitter } from "../lambda-event-queue/LambdaInvocationEventQueue";
 
 interface ChannelEventWrapper {
   type: "data";
@@ -51,6 +51,7 @@ export async function listenForAppSyncEvents() {
         payload: JSON.stringify(data.event.payload),
         status: "pending",
         origin: "appsync",
+        createdAt: new Date(),
       };
 
       lambdaInvocationEventEmitter.emit("invoke", invocation);

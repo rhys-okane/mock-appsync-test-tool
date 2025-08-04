@@ -20,7 +20,6 @@ configDotenv({
     path.resolve(__dirname, "../../.env"),
   ],
 });
-console.log(path.resolve(__dirname, "../../.env"));
 
 const app = express();
 
