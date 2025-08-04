@@ -1,10 +1,11 @@
 import { Application, Router } from "express";
 import { invocations, lambdasAwaitingPayloads } from "../../state/State";
 import { Server } from "socket.io";
-import { invokeLambda } from "../../shared/InvokeLambda";
+import { invokeLambdaWithExpressResponse } from "./utils/InvokeLambdaWithExpressResponse";
 import { Invocation } from "../../types/Invocation";
 import EventEmitter from "node:events";
 import { events } from "aws-amplify/data";
+import {Response} from "express";
 
 export const lambdaResponseEventEmitter = new EventEmitter();
 
@@ -22,8 +23,6 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
       lambdasAwaitingPayloads.push(res);
       return;
     }
-
-    invokeLambda(invocation, res);
   });
 
   router.post("/runtime/invocation/:invocationId/:type", (req, res) => {
@@ -54,10 +53,12 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
     }
 
     if (invocation.status !== "executing") {
-      console.error(`Invocation ${invocationId} is not in the executing state`);
-      return res
-        .status(400)
-        .send("Bad Request: Invocation is not in the executing state");
+      errorHandler(
+        `Invocation ${invocationId} is not in the executing state`,
+        invocation,
+        res,
+      );
+      return;
     }
 
     // If we reach this point, the invocation is in the correct state
@@ -76,6 +77,7 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
     lambdaResponseEventEmitter.emit("invocationCompleted", updatedInvocation);
 
     if (invocation.origin === "appsync") {
+      console.log(updatedInvocation.responsePayload)
       // Post the response back to the AppSync channel
       events
         .post(`/default/${invocation.lambdaEventId}`, {
@@ -91,3 +93,19 @@ export const listenOnLambdaRuntimeApiRoutes = (app: Application, io: Server) => 
     }
   });
 };
+
+function errorHandler(error: string, invocation: Invocation, res: Response) {
+  console.error("Error during invocation:", error);
+  
+  res.status(500).send("Internal Server Error: " + error);
+
+  if (invocation.origin === "appsync") {
+    events
+    .post(`/default/${invocation.lambdaEventId}`, {
+      status: "error",
+      payload: JSON.stringify({
+        error: error,
+      })
+    })
+  }
+}

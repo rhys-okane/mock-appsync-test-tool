@@ -1,7 +1,7 @@
-import { Invocation } from "../types/Invocation";
+import { Invocation } from "../../../types/Invocation";
 import { Response } from "express";
 
-export const invokeLambda = async (invocation: Invocation, res: Response) => {
+export const invokeLambdaWithExpressResponse = async (invocation: Invocation, res: Response) => {
   const id = invocation.lambdaEventId;
 
   invocation.status = "executing";

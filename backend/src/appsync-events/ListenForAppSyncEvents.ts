@@ -58,8 +58,12 @@ export async function listenForAppSyncEvents() {
       try {
         invokeLambdaFromQueue(invocation);
       } catch {
+        console.error(`[ERROR] Failed to invoke lambda ${invocation.lambdaEventId} from queue - no handlers available`);
         await events.post(`/default/${data.event.lambdaEventId}`, {
-          error: "No lambda handlers available",
+          status: "error",
+          payload: JSON.stringify({
+            error: "No lambda handlers available",
+          }),
         });
       }
     },

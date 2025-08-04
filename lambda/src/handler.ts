@@ -29,9 +29,9 @@ interface EventWrapper {
   };
 }
 
-export const handler = async (event: AppSyncResolverEvent<unknown>): Promise<unknown> => {
+export const handler = async (event: AppSyncResolverEvent<string>): Promise<unknown> => {
   // eslint-disable-next-line no-async-promise-executor
-  return await new Promise<unknown>(async (resolve, reject) => {
+  return await new Promise<string>(async (resolve, reject) => {
     console.log("Received AppSync event:", JSON.stringify(event, null, 2));
 
     const responseId = uuid();
@@ -39,6 +39,8 @@ export const handler = async (event: AppSyncResolverEvent<unknown>): Promise<unk
     events.connect(`/default/${responseId}`).then(channel => {
       channel.subscribe({
         next: (data: EventWrapper) => {
+          console.log("Received response:", data.event.payload);
+
           resolve(JSON.parse(data.event.payload));
         },
         error: (error: Error) => {
