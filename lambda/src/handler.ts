@@ -37,7 +37,10 @@ export const handler = async (
 ): Promise<unknown> => {
   // eslint-disable-next-line no-async-promise-executor
   return await new Promise<string>(async (resolve, reject) => {
-    console.log("Received AppSync event:", JSON.stringify(event, null, 2));
+    console.log(
+      "Received AppSync request for:",
+      `${event.info.parentTypeName}.${event.info.fieldName}`,
+    );
 
     const responseId = uuid();
 
@@ -55,14 +58,13 @@ export const handler = async (
       });
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     events
-      .post("/default/appsync-lambda-invokes", <any>{
+      .post("/default/appsync-lambda-invokes", {
         lambdaEventId: responseId,
-        payload: event,
+        // TypeScript cannot properly introspect the AppSync event payload to determine if it is JSON stringifyable for the payload type
+        payload: event as never,
       })
       .then(() => {
-        console.log(responseId);
         console.log("Posted event to channel:", responseId);
       });
   });
