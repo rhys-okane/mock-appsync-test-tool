@@ -4800,6 +4800,8 @@ __metadata:
     ts-node: "npm:10.9.2"
     typescript: "npm:5.8.3"
     uuid: "npm:11.1.0"
+  bin:
+    mock-appsync-test-tool: dist/index.js
   languageName: unknown
   linkType: soft
 
@@ -7895,8 +7897,6 @@ __metadata:
 "mock-appsync-test-tool@workspace:.":
   version: 0.0.0-use.local
   resolution: "mock-appsync-test-tool@workspace:."
-  bin:
-    mock-appsync-test-tool: backend/dist/index.js
   languageName: unknown
   linkType: soft
 
