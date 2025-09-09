@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "start": "ts-node src/index.ts",
     "build": "tsc",
     "package": "yarn bundle && tar -czf dist/mock-appsync-test-tool.tgz dist/index.js package.json",
     "bundle": "esbuild src/index.ts --bundle --platform=node --target=node22 --outfile=dist/index.js  --banner:js='#!/usr/bin/env node'",

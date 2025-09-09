@@ -12,11 +12,11 @@
 
 ## First Time Setup
 
-#### 1. Install the tool with your package manager of choice
+#### 1. Setup the tool
 
-- `npm install git@github.com:instil/mock-appsync-test-tool.git`
-- `pnpm install git@github.com:instil/mock-appsync-test-tool.git`
-- `yarn dlx git@github.com:instil/mock-appsync-test-tool.git`
+- `git clone git@github.com:instil/mock-appsync-test-tool.git`
+- `corepack enable`
+- `yarn install`
 
 #### 2. Deploy an AppSync Events API manually
 
@@ -39,11 +39,9 @@ APPSYNC_EVENTS_API_KEY=[your-key]
 
 #### 4. Run the local lambda listener
 
-- `npx mock-appsync-test-tool`
-- `yarn dlx mock-appsync-test-tool`
-- `pnpx mock-appsync-test-tool`
+- `yarn start`
 
-4. Start your AppSync Resolver function locally
+#### 5. Start your AppSync Resolver function locally
 
 - Set the `AWS_LAMBDA_RUNTIME_API` environment variable to `localhost:5050`
 - Run the lambda
@@ -51,7 +49,7 @@ APPSYNC_EVENTS_API_KEY=[your-key]
 > [!TIP]
 > The default API key expires 2 weeks after creation - consider creating a new key with a later expiry
 
-#### 5. Replace your cloud AppSync Resolver function with a copy of the [listener lambda](./lambda)
+#### 6. Replace your cloud AppSync Resolver function with a copy of the [listener lambda](./lambda)
 
 - Download the Lambda Handler zip file from https://github.com/instil/mock-appsync-test-tool/releases
 - Set `runtime` to `node22.x`
