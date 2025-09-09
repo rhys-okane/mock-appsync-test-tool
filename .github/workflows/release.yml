@@ -33,9 +33,9 @@ jobs:
         working-directory: backend
         run: yarn bundle
 
-      - name: Bundle lambda
+      - name: Package lambda
         working-directory: lambda
-        run: yarn bundle
+        run: yarn package
 
       - name: Check for Lambda updates
         id: lambda_change_check
