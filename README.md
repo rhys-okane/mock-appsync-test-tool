@@ -69,7 +69,7 @@ In future, you can run `npx mock-appsync-test-tool` to restart the tool
 - Your lambda responds to the mock-appsync-test-tool, which forwards the response to AppSync
 - AppSync responds to your request as if it ran in the cloud
 
-Limitations:
+## Limitations:
 
 - Your AppSync will act as if it is running as your AWS user - this is likely more privileged than the role it will have when fully deployed. Make sure you test any changes to IAM roles in the cloud, not locally
 - Killing the mock-appsync-test-tool will make your Lambda crash, you will have to restart it
