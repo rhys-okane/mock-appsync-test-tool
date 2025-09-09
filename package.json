@@ -5,5 +5,9 @@
     "frontend",
     "backend",
     "lambda"
-  ]
+  ],
+  "scripts": {
+    "prepare": "yarn workspace backend bundle"
+  },
+  "bin": "backend/dist/index.js"
 }
