@@ -13,7 +13,7 @@ export function handleLambdaInvocationEventQueue(io: SocketServer) {
   lambdaInvocationEventEmitter.on("invoke", (invocation: Invocation) => {
     console.log(`[Invoke] ${invocation.lambdaEventId} is available for Lambda`);
 
-    const lambdaResponse = lambdasAwaitingPayloads.shift();
+    const lambdaResponse = getNextUnclosedExpressResponse();
     if (lambdaResponse) {
       console.log(
         `[Invoke] Invoking Lambda with ID: ${invocation.lambdaEventId}`,
@@ -30,4 +30,12 @@ export function handleLambdaInvocationEventQueue(io: SocketServer) {
 
     io.emit("invocationAdded", invocation);
   });
+}
+
+function getNextUnclosedExpressResponse() {
+  let response = lambdasAwaitingPayloads.shift();
+  while (response && response.closed) {
+    response = lambdasAwaitingPayloads.shift();
+  }
+  return response;
 }
