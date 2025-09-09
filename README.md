@@ -12,41 +12,62 @@
 
 ## First Time Setup
 
-- Install the tool with your package manager of choice
-  - `npm install git@github.com:instil/mock-appsync-test-tool.git`
-  - `pnpm install git@github.com:instil/mock-appsync-test-tool.git`
-  - `yarn dlx git@github.com:instil/mock-appsync-test-tool.git`
+#### 1. Install the tool with your package manager of choice
 
-- Run the local lambda listener
-  - `npx mock-appsync-test-tool`
-  - `yarn dlx mock-appsync-test-tool`
-  - `pnpx mock-appsync-test-tool`
+- `npm install git@github.com:instil/mock-appsync-test-tool.git`
+- `pnpm install git@github.com:instil/mock-appsync-test-tool.git`
+- `yarn dlx git@github.com:instil/mock-appsync-test-tool.git`
 
-- Start your AppSync Resolver function locally
-  - Set the `AWS_LAMBDA_RUNTIME_API` environment variable to `localhost:5050`
-  - Run the lambda
+#### 2. Deploy an AppSync Events API manually
 
-- Deploy an AppSync Events API manually
-  - Go to the AppSync console
-  - Select `Create Event API`
-  - Give it a nice name
-  - Go to settings
-  - Take note of it's API Key and HTTP DNS endpoint
+- Go to the AppSync console
+- Select `Create Event API`
+- Give it a nice name
+- Go to settings
+- Take note of it's API Key and HTTP DNS endpoint
 
-> [!NOTE]
+#### 3. Set the following environment variables
+
+```
+APPSYNC_EVENTS_API_URL=https://[your-events-api].appsync-api.[region].amazonaws.com/event
+APPSYNC_EVENTS_REGION=[region]
+APPSYNC_EVENTS_API_KEY=[your-key]
+```
+
+> [!TIP]
+> The mock-appsync-test-tool will load .env files from the current directory when it starts up
+
+#### 4. Run the local lambda listener
+
+- `npx mock-appsync-test-tool`
+- `yarn dlx mock-appsync-test-tool`
+- `pnpx mock-appsync-test-tool`
+
+4. Start your AppSync Resolver function locally
+
+- Set the `AWS_LAMBDA_RUNTIME_API` environment variable to `localhost:5050`
+- Run the lambda
+
+> [!TIP]
 > The default API key expires 2 weeks after creation - consider creating a new key with a later expiry
 
-- Replace your cloud AppSync Resolver function with a copy of the [listener lambda](./lambda)
-  - Download the lambda handler from https://github.com/instil/mock-appsync-test-tool/releases
-  - Set `runtime` to `node22.x`
-  - Set the `handler` to `handler.handler`
-  - Upload the `lambda.zip` file to the Lambda console
-  - Set the following environment variables on the Lambda
-    - `APPSYNC_EVENTS_API_URL=https://[your-events-api].appsync-api.[region].amazonaws.com/event`
-      - Note the `/event` at the end, this may not be in the URL you copied from the console
-    - `APPSYNC_EVENTS_API_KEY=[your-key]`
+#### 5. Replace your cloud AppSync Resolver function with a copy of the [listener lambda](./lambda)
 
-> [!NOTE]
+- Download the Lambda Handler zip file from https://github.com/instil/mock-appsync-test-tool/releases
+- Set `runtime` to `node22.x`
+- Set the `handler` to `handler.handler`
+- Upload the `lambda.zip` file to the Lambda console
+- Set the following environment variables on the Lambda
+
+```
+APPSYNC_EVENTS_API_URL=https://[your-events-api].appsync-api.[region].amazonaws.com/event
+APPSYNC_EVENTS_API_KEY=[your-key]
+```
+
+> [!IMPORTANT]
+> Note the `/event` at the end of the API URL, this may not be in the URL you copied from the console
+
+> [!TIP]
 > You should be able to automate this process with your IaC tool of choice
 
 - OR write your own listener function
