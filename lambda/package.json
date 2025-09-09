@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "ts-node src/handler.ts",
-    "build": "esbuild src/handler.ts --bundle --platform=node --target=node20 --outfile=dist/handler.js && zip -r dist/lambda.zip dist/handler.js",
+    "bundle": "esbuild src/handler.ts --bundle --platform=node --target=node20 --outfile=dist/handler.js && zip -r dist/lambda.zip dist/handler.js",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest"
   },
