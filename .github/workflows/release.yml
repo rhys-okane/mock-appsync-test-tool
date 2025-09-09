@@ -30,13 +30,15 @@ jobs:
 
       - name: Bundle lambda
         working-directory: lambda
-        run: yarn bundle
+        run: yarn build
 
       - name: Check for Lambda updates
         id: lambda_change_check
         uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
         with:
-          files: lambda/**
+          files: |
+            lambda/**
+            .github/**
 
       - name: Create GitHub Release for new Lambda
         if: steps.lambda_change_check.outputs.any_changed == 'true'
