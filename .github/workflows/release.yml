@@ -29,13 +29,13 @@ jobs:
         working-directory: backend
         run: yarn build
 
-      - name: Bundle backend
+      - name: Package backend
         working-directory: backend
-        run: yarn bundle
-
-      - name: Package lambda
-        working-directory: lambda
         run: yarn package
+
+      - name: Bundle lambda
+        working-directory: lambda
+        run: yarn bundle
 
       - name: Check for Lambda updates
         id: lambda_change_check
