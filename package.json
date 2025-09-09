@@ -7,7 +7,8 @@
     "lambda"
   ],
   "scripts": {
-    "prepare": "yarn workspace backend bundle"
+    "prepare": "yarn workspace backend bundle",
+    "postinstall": "yarn workspace backend bundle"
   },
   "bin": "backend/dist/index.js"
 }
