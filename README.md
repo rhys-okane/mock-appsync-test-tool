@@ -1,6 +1,6 @@
 # Mock AppSync Test Tool
 
-> A simple solution for interacting with AppSync Resolves ran locally
+> A simple solution for interacting with AppSync Resolvers ran locally
 
 ## Requirements
 
