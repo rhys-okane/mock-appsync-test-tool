@@ -32,8 +32,9 @@
   - Give it a nice name
   - Go to settings
   - Take note of it's API Key and HTTP DNS endpoint
-    > [!NOTE]
-    > The default API key expires 2 weeks after creation - consider creating a new key with a later expiry
+
+> [!NOTE]
+> The default API key expires 2 weeks after creation - consider creating a new key with a later expiry
 
 - Replace your cloud AppSync Resolver function with a copy of the [listener lambda](./lambda)
   - Download the lambda handler from https://github.com/instil/mock-appsync-test-tool/releases
@@ -44,8 +45,9 @@
     - `APPSYNC_EVENTS_API_URL=https://[your-events-api].appsync-api.[region].amazonaws.com/event`
       - Note the `/event` at the end, this may not be in the URL you copied from the console
     - `APPSYNC_EVENTS_API_KEY=[your-key]`
-      > [!NOTE]
-      > You should be able to automate this process with your IaC tool of choice
+
+> [!NOTE]
+> You should be able to automate this process with your IaC tool of choice
 
 - OR write your own listener function
   - Follow the lead of the TypeScript lambda in [lambda/src/handler.ts](./lambda/src/handler.ts)
