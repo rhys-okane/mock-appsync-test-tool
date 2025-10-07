@@ -7,7 +7,7 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "package": "yarn bundle && npm pack --pack-destination ./dist",
-    "bundle": "esbuild src/index.ts --platform=node --target=node22 --outfile=dist/index.js  --banner:js='#!/usr/bin/env node'",
+    "bundle": "esbuild src/index.ts --bundle --minify --platform=node --target=node22 --outfile=dist/index.js --banner:js='#!/usr/bin/env node' --packages=external",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest",
     "prepublishOnly": "yarn bundle"
@@ -35,6 +35,7 @@
     "aws-lambda": "1.0.7",
     "cors": "2.8.5",
     "dotenv": "17.2.1",
+    "esbuild-node-externals": "^1.18.0",
     "express": "5.1.0",
     "socket.io": "4.8.1",
     "uuid": "11.1.0"
