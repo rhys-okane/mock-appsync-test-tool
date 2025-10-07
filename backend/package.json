@@ -1,19 +1,19 @@
 {
-  "name": "backend",
+  "name": "mock-appsync-test-tool-backend",
+  "version": "1.0.0",
   "packageManager": "yarn@4.9.2",
-  "private": true,
   "scripts": {
     "dev": "ts-node src/index.ts",
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "package": "yarn bundle && tar -czf dist/mock-appsync-test-tool.tgz dist/index.js package.json",
-    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node22 --outfile=dist/index.js  --banner:js='#!/usr/bin/env node'",
+    "package": "yarn bundle && npm pack --pack-destination ./dist",
+    "bundle": "esbuild src/index.ts --platform=node --target=node22 --outfile=dist/index.js  --banner:js='#!/usr/bin/env node'",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest",
-    "prepare": "bundle"
+    "prepublishOnly": "yarn bundle"
   },
   "bin": {
-    "mock-appsync-test-tool": "dist/index.js"
+    "mock-appsync-test-tool": "./dist/index.js"
   },
   "devDependencies": {
     "@types/cors": "2.8.19",
@@ -27,6 +27,7 @@
     "jest": "30.0.5",
     "prettier": "3.6.2",
     "ts-jest": "29.4.0",
+    "ts-node": "10.9.2",
     "typescript": "5.8.3"
   },
   "dependencies": {
@@ -36,7 +37,6 @@
     "dotenv": "17.2.1",
     "express": "5.1.0",
     "socket.io": "4.8.1",
-    "ts-node": "10.9.2",
     "uuid": "11.1.0"
   }
 }

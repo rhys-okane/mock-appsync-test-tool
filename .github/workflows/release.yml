@@ -61,6 +61,6 @@ jobs:
           name: "Release ${{ github.run_number }}"
           files: |
             lambda/dist/lambda.zip
-            backend/dist/mock-appsync-test-tool.tgz
+            backend/dist/*.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
