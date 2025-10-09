@@ -68,7 +68,7 @@ jobs:
       - name: Publish to NPM
         working-directory: backend
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_ACCESS_TOKEN }}" > .npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_ACCESS_TOKEN }}" > ~/.npmrc
           npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
