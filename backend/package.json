@@ -4,7 +4,7 @@
   "packageManager": "yarn@4.9.2",
   "repository": {
     "type": "git",
-    "url": "github.com:rhysokane/mock-appsync-test-tool"
+    "url": "https://github.com/rhys-okane/mock-appsync-test-tool"
   },
   "license": "MIT",
   "scripts": {
