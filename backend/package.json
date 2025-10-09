@@ -1,7 +1,9 @@
 {
   "name": "@rhys-okane/mock-appsync-test-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "yarn@4.9.2",
+  "repository": "github.com:rhysokane/mock-appsync-test-tool",
+  "license": "MIT",
   "scripts": {
     "dev": "ts-node src/index.ts",
     "start": "ts-node src/index.ts",
