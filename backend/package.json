@@ -1,5 +1,5 @@
 {
-  "name": "mock-appsync-test-tool-backend",
+  "name": "@rhys-okane/mock-appsync-test-tool",
   "version": "1.0.0",
   "packageManager": "yarn@4.9.2",
   "scripts": {
@@ -12,9 +12,7 @@
     "test": "jest",
     "prepublishOnly": "yarn bundle"
   },
-  "bin": {
-    "mock-appsync-test-tool": "./dist/index.js"
-  },
+  "bin": "./dist/index.js",
   "devDependencies": {
     "@types/cors": "2.8.19",
     "@types/express": "5.0.3",

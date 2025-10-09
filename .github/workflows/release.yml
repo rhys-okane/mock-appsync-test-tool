@@ -64,3 +64,9 @@ jobs:
             backend/dist/*.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to NPM
+        working-directory: backend
+        run: npm publish --access public
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
