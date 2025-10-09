@@ -2675,7 +2675,7 @@ __metadata:
     typescript: "npm:5.8.3"
     uuid: "npm:11.1.0"
   bin:
-    mock-appsync-test-tool: ./dist/index.js
+    mock-appsync-test-tool: dist/index.js
   languageName: unknown
   linkType: soft
 
