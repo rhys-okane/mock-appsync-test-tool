@@ -74,4 +74,4 @@ jobs:
         if: steps.backend_change_check.outputs.any_changed == 'true'
         working-directory: backend
         run: |
-          npm publish --access public
+          npm publish --provenance
