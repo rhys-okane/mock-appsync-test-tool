@@ -29,8 +29,6 @@ export const listenOnLambdaRuntimeApiRoutes = (
     // TODO: Make a proper function for type narrowing this
     const type = req.params.type as "response" | "failure";
 
-    console.log("the lambda sent a response of type " + type);
-
     if (!req.params.invocationId) {
       console.error("No invocation ID provided");
       return res.status(400).send("Bad Request: No invocation ID provided");
@@ -49,9 +47,9 @@ export const listenOnLambdaRuntimeApiRoutes = (
 
     const invocation = invocations[invocationIndex];
 
-    if (invocation.status !== "executing") {
+    if (invocation.status === "success" || invocation.status === "failure") {
       errorHandler(
-        `Invocation ${invocationId} is not in the executing state`,
+        `Invocation ${invocationId} has already been executed`,
         invocation,
         res,
       );
@@ -67,7 +65,9 @@ export const listenOnLambdaRuntimeApiRoutes = (
 
     invocations[invocationIndex] = updatedInvocation;
 
-    console.log(`Invocation ${invocationId} completed`);
+    console.log(
+      `[Invoke] Invocation ${invocationId} completed with status ${updatedInvocation.status}`,
+    );
     res.status(204).send();
 
     io.emit("invocationCompleted", updatedInvocation);

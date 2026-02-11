@@ -8,7 +8,7 @@ setInterval(() => {
   const now = Date.now();
   invocations.forEach((invocation) => {
     if (now - invocation.createdAt.getTime() > 60000) {
-      invocation.status = "failure";
+      invocation.status = "response-timeout";
     }
   });
 }, 60000);

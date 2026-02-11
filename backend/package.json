@@ -1,6 +1,6 @@
 {
   "name": "@rhys-okane/mock-appsync-test-tool",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "packageManager": "yarn@4.9.2",
   "repository": {
     "type": "git",
