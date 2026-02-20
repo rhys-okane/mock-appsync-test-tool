@@ -6064,7 +6064,7 @@ __metadata:
     tailwindcss: "npm:4.1.11"
     typescript: "npm:~5.8.3"
     typescript-eslint: "npm:8.35.1"
-    vite: "npm:7.0.4"
+    vite: "npm:7.0.8"
     zustand: "npm:5.0.6"
   languageName: unknown
   linkType: soft
@@ -8081,7 +8081,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^4.0.2":
+"picomatch@npm:^4.0.2, picomatch@npm:^4.0.3":
   version: 4.0.3
   resolution: "picomatch@npm:4.0.3"
   checksum: 10c0/9582c951e95eebee5434f59e426cddd228a7b97a0161a375aed4be244bd3fe8e3a31b846808ea14ef2c8a2527a6eeab7b3946a67d5979e81694654f939473ae2
@@ -9342,14 +9342,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:7.0.4":
-  version: 7.0.4
-  resolution: "vite@npm:7.0.4"
+"vite@npm:7.0.8":
+  version: 7.0.8
+  resolution: "vite@npm:7.0.8"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.6"
     fsevents: "npm:~2.3.3"
-    picomatch: "npm:^4.0.2"
+    picomatch: "npm:^4.0.3"
     postcss: "npm:^8.5.6"
     rollup: "npm:^4.40.0"
     tinyglobby: "npm:^0.2.14"
@@ -9393,7 +9393,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/2eb3572d60e8e6f0e291905e30989a52042350439c03002603d27a396652bf0484e13d5e8b15e0d7bd9988a8dc03ee712d45eb83e9dcf8aab4e8ecb28b0419b6
+  checksum: 10c0/733fc790c537af0d420d4002cb622ec228defcec7ef31e77d02fd9d4af4cb42e34da1dcbdb4c2175b3076edfb35860b56fbd7deda8676bf31e48fe830e1e0e61
   languageName: node
   linkType: hard
 
